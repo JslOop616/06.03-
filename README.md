@@ -188,3 +188,14 @@ fakebank/
 ## Лицензия
 
 MIT
+
+
+## Известные ограничения
+
+- **Race condition в лимитах.** На SQLite нет row-level lock. Два параллельных
+  перевода могут превысить дневной лимит. В продакшене решается через
+  PostgreSQL + `SELECT ... FOR UPDATE` или Redis-based rate-limit.
+- **Race condition при регистрации первого админа.** Аналогично — на SQLite
+  нет строгой изоляции. На PostgreSQL работает корректно.
+- **Rate-limit в памяти.** Для multi-worker нужен Redis (`REDIS_URL`).
+- **JWT не отзывается при logout.** Действует до истечения TTL.
